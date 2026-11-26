@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ВАЗА — 3D-презентация керамики</title>
+  <meta name="description" content="Сайт-презентация ваз: интерактивная 3D-модель, история керамики, техники и интересные факты." />
+  <meta name="theme-color" content="#2ec4b6" />
+  <link rel="icon" type="image/svg+xml" href="assets/vase-logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <!-- Файл настроек создаётся админ-панелью. Если его нет — используются значения по умолчанию. -->
+  <script src="site-config.js" onerror="void 0"></script>
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <span class="star s1">✦</span><span class="star s2">✧</span><span class="star s3">✦</span>
+    <span class="star s4">✧</span><span class="star s5">✦</span><span class="star s6">✧</span>
+  </div>
+
+  <header class="header">
+    <a href="#hero" class="logo" aria-label="ВАЗА — на главную">
+      <img src="assets/vase-logo.svg" alt="" class="logo-img-small" data-image="logo" />
+      <img src="assets/vase-logo.svg" alt="" class="logo-img-big" data-image="logo-big" />
+    </a>
+    <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="#about">О вазе</a>
+      <a href="#shape">Форма и декор</a>
+      <a href="#craft">Техники</a>
+      <a href="#timeline">История</a>
+      <a href="#collection">Коллекция</a>
+      <a href="#project">Проект</a>
+      <a href="#model-purpose">3D-модель</a>
+      <a href="#facts">Факты</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===================== 1. HERO ===================== -->
+    <section class="hero" id="hero">
+      <div class="hero-logos">
+        <h1 class="hero-logo-big" data-edit="hero.title">ВАЗА</h1>
+      </div>
+      <p class="hero-subtitle" data-edit="hero.subtitle">Маленький шедевр глины, большая история формы и света</p>
+
+      <div class="switcher" role="tablist" aria-label="Режим просмотра">
+        <button class="switch-btn active" role="tab" aria-selected="true" data-mode="model">🎮 3D-модель</button>
+        <button class="switch-btn" role="tab" aria-selected="false" data-mode="animation">🎬 Анимация</button>
+      </div>
+
+      <div class="stage">
+        <div class="panel active" id="panel-model" data-panel="model">
+          <div id="viewer" class="viewer" data-model-src="">
+            <div class="css-vase" aria-hidden="true"><div class="css-vase-neck"></div><div class="css-vase-body"></div><div class="css-vase-base"></div></div>
+          </div>
+          <div class="loader" id="loader"><div class="loader-vase"></div><p id="loader-text">Загружаем вазу… 0%</p></div>
+          <div class="viewer-error" id="viewer-error" hidden>
+            <p>😢 Не удалось загрузить 3D-модель — показываем запасную вазу.</p>
+            <small>Проверьте путь к файлу в админ-панели и откройте сайт через локальный сервер (не file://).</small>
+          </div>
+          <div class="viewer-controls">
+            <button class="mini-btn" id="btn-rotate" aria-pressed="true" title="Автовращение">⟳ Вращение</button>
+          </div>
+          <p class="hint" data-edit="hero.hint">Крутите мышью или пальцем · колесо / щипок — масштаб</p>
+        </div>
+        <div class="panel" id="panel-animation" data-panel="animation" hidden>
+          <div id="animation-viewer" class="viewer animation-viewer" data-model-src="assets/vase_animated.glb" data-animation-src="assets/vase-sway.glb">
+            <div class="css-vase css-vase-anim" aria-hidden="true"><div class="css-vase-neck"></div><div class="css-vase-body"></div><div class="css-vase-base"></div></div>
+            <span class="spark spark-a">✦</span><span class="spark spark-b">✧</span><span class="spark spark-c">✦</span>
+          </div>
+          <p class="video-caption" data-edit="hero.animationCaption">Ваза прайм покачивание</p>
+        </div>
+      </div>
+
+      <a href="#about" class="scroll-down" aria-label="Листать вниз">▼</a>
+    </section>
+
+    <!-- ===================== 2. О ВАЗЕ ===================== -->
+    <section class="section" id="about">
+      <h2 class="section-title reveal" data-edit="about.title">О вазе</h2>
+      <div class="about-grid">
+        <div class="card reveal">
+          <p class="lead" data-edit="about.lead">
+            <strong>Ваза</strong> — сосуд, созданный из глины, стекла, фарфора или металла. Она хранит не только воду и цветы, но и вкус эпохи: пропорции, орнамент и технику мастера.
+          </p>
+          <p data-edit="about.text">
+            От древних амфор до современных керамических объектов — ваза прошла путь от практичной посуды до предмета искусства. Её форма подчинена ритму, материалу и свету, а каждая трещина глазури делает её неповторимой.
+          </p>
+        </div>
+        <ul class="info-list reveal">
+          <li><span class="info-label" data-edit="about.info1.label">Материал</span><span data-edit="about.info1.value">Глина, фарфор, стекло</span></li>
+          <li><span class="info-label" data-edit="about.info2.label">Техника</span><span data-edit="about.info2.value">Гончарный круг, ручная лепка</span></li>
+          <li><span class="info-label" data-edit="about.info3.label">Обжиг</span><span data-edit="about.info3.value">900–1300 °C</span></li>
+          <li><span class="info-label" data-edit="about.info4.label">Декор</span><span data-edit="about.info4.value">Глазурь, роспись, тиснение</span></li>
+          <li><span class="info-label" data-edit="about.info5.label">Первые формы</span><span data-edit="about.info5.value">Около 5000 лет до н. э.</span></li>
+          <li><span class="info-label" data-edit="about.info6.label">Символ</span><span data-edit="about.info6.value">Дом, достаток, хрупкая красота</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== 3. ФОРМА И ДЕКОР ===================== -->
+    <section class="section section-alt" id="shape">
+      <h2 class="section-title reveal" data-edit="shape.title">Форма и декор</h2>
+      <p class="section-intro reveal" data-edit="shape.intro">
+        Хорошая ваза читается как силуэт: горлышко, плечо, тулово и поддон. Декор не спорит с формой, а подчёркивает её.
+      </p>
+      <div class="look-grid">
+        <div class="look-card reveal"><div class="look-icon">🏺</div><h3 data-edit="shape.c1.title">Тулово</h3><p data-edit="shape.c1.text">Округлая или вытянутая часть — главный объём и характер изделия.</p></div>
+        <div class="look-card reveal"><div class="look-icon">🥣</div><h3 data-edit="shape.c2.title">Горлышко</h3><p data-edit="shape.c2.text">Узкое горло удерживает воду и задаёт ритм силуэту.</p></div>
+        <div class="look-card reveal"><div class="look-icon">🎨</div><h3 data-edit="shape.c3.title">Глазурь</h3><p data-edit="shape.c3.text">Стекловидное покрытие защищает глину и играет на свету.</p></div>
+        <div class="look-card reveal"><div class="look-icon">✋</div><h3 data-edit="shape.c4.title">Ручки</h3><p data-edit="shape.c4.text">Изогнутые ручки амфоры делают сосуд удобным и выразительным.</p></div>
+        <div class="look-card reveal"><div class="look-icon">🌿</div><h3 data-edit="shape.c5.title">Орнамент</h3><p data-edit="shape.c5.text">Линии, точки и растительные мотивы рассказывают о культуре мастера.</p></div>
+        <div class="look-card reveal"><div class="look-icon">🪞</div><h3 data-edit="shape.c6.title">Фактура</h3><p data-edit="shape.c6.text">Матовая, зернистая или зеркальная поверхность меняет восприятие формы.</p></div>
+      </div>
+      <p class="note reveal" data-edit="shape.note">📏 В музейных коллекциях высота классической вазы колеблется от 8 до 60 см — всё зависит от назначения.</p>
+    </section>
+
+    <!-- ===================== 4. ТЕХНИКИ ===================== -->
+    <section class="section" id="craft">
+      <h2 class="section-title reveal" data-edit="craft.title">Техники создания</h2>
+      <p class="section-intro reveal" data-edit="craft.intro">
+        Каждый этап меняет материал: глина пластична, черепок твёрд, а глазурь придаёт цвет и блеск. Именно сочетание этих состояний делает керамику живой.
+      </p>
+      <div class="ability-grid">
+        <article class="ability reveal"><div class="ability-icon">🌀</div><h3 data-edit="craft.a1.title">Гончарный круг</h3><p data-edit="craft.a1.text">Симметричные формы, созданные вращением и давлением рук.</p><small data-edit="craft.a1.from">Классика</small></article>
+        <article class="ability reveal"><div class="ability-icon">🧱</div><h3 data-edit="craft.a2.title">Ручная лепка</h3><p data-edit="craft.a2.text">Свободные асимметричные силуэты и фактурные поверхности.</p><small data-edit="craft.a2.from">От рук мастера</small></article>
+        <article class="ability reveal"><div class="ability-icon">🔥</div><h3 data-edit="craft.a3.title">Терракота</h3><p data-edit="craft.a3.text">Тёплый красноватый цвет неглазурованной глины после обжига.</p><small data-edit="craft.a3.from">От глины</small></article>
+        <article class="ability reveal"><div class="ability-icon">⚪</div><h3 data-edit="craft.a4.title">Фарфор</h3><p data-edit="craft.a4.text">Тонкий белый материал с лёгкой прозрачностью на просвет.</p><small data-edit="craft.a4.from">От каолина</small></article>
+        <article class="ability reveal"><div class="ability-icon">🌊</div><h3 data-edit="craft.a5.title">Глазурь</h3><p data-edit="craft.a5.text">Потёки, крапления и градиенты — цвет закрепляется стеклом.</p><small data-edit="craft.a5.from">От минералов</small></article>
+        <article class="ability reveal"><div class="ability-icon">✒️</div><h3 data-edit="craft.a6.title">Роспись</h3><p data-edit="craft.a6.text">Кобальт, ангобы и надглазурные краски превращают вазу в холст.</p><small data-edit="craft.a6.from">От кисти</small></article>
+        <article class="ability reveal"><div class="ability-icon">🪵</div><h3 data-edit="craft.a7.title">Тиснение</h3><p data-edit="craft.a7.text">Орнамент продавливается в ещё мягкую глину штампом.</p><small data-edit="craft.a7.from">От штампа</small></article>
+        <article class="ability reveal"><div class="ability-icon">💎</div><h3 data-edit="craft.a8.title">Стекло</h3><p data-edit="craft.a8.text">Выдувание и литьё дают прозрачные вазы с тонкой стенкой.</p><small data-edit="craft.a8.from">От песка</small></article>
+        <article class="ability reveal"><div class="ability-icon">🜂</div><h3 data-edit="craft.a9.title">Раку</h3><p data-edit="craft.a9.text">Быстрый обжиг и охлаждение углями создают непредсказуемые пятна.</p><small data-edit="craft.a9.from">От огня</small></article>
+        <article class="ability reveal"><div class="ability-icon">🖨️</div><h3 data-edit="craft.a10.title">3D-печать</h3><p data-edit="craft.a10.text">Цифровая модель становится прототипом или готовой вазой из керамики.</p><small data-edit="craft.a10.from">От файла</small></article>
+      </div>
+    </section>
+
+    <!-- ===================== 5. ИСТОРИЯ ===================== -->
+    <section class="section section-alt" id="timeline">
+      <h2 class="section-title reveal" data-edit="timeline.title">История керамики</h2>
+      <ol class="timeline">
+        <li class="reveal"><span class="year" data-edit="timeline.y1">5000 до н.э.</span><div class="tl-card"><h3 data-edit="timeline.t1">Первые сосуды</h3><small data-edit="timeline.p1">Неолит</small><p data-edit="timeline.d1">Глина используется для хранения воды и зерна — начало ремесла.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y2">1500 до н.э.</span><div class="tl-card"><h3 data-edit="timeline.t2">Микенские вазы</h3><small data-edit="timeline.p2">Бронзовый век</small><p data-edit="timeline.d2">Появляются расписные сосуды с геометрическим орнаментом.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y3">750 до н.э.</span><div class="tl-card"><h3 data-edit="timeline.t3">Геометрический стиль</h3><small data-edit="timeline.p3">Древняя Греция</small><p data-edit="timeline.d3">Ритмичные полосы и фигуры людей превращают вазу в рассказ.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y4">500 до н.э.</span><div class="tl-card"><h3 data-edit="timeline.t4">Чёрнофигурная ваза</h3><small data-edit="timeline.p4">Афины</small><p data-edit="timeline.d4">Мастера Афин создают знаменитые амфоры с мифологическими сценами.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y5">200</span><div class="tl-card"><h3 data-edit="timeline.t5">Фарфор в Китае</h3><small data-edit="timeline.p5">Династия Хань</small><p data-edit="timeline.d5">Лёгкий белый материал открывает новую эпоху тонкой керамики.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y6">1400</span><div class="tl-card"><h3 data-edit="timeline.t6">Майолика</h3><small data-edit="timeline.p6">Италия</small><p data-edit="timeline.d6">Яркая глазурь и роспись делают вазу центральным украшением интерьера.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y7">1700</span><div class="tl-card"><h3 data-edit="timeline.t7">Фарфор Европы</h3><small data-edit="timeline.p7">Мейсен, Севр</small><p data-edit="timeline.d7">Европейские мануфактуры осваивают секрет твёрдого фарфора.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y8">1900</span><div class="tl-card"><h3 data-edit="timeline.t8">Модернизм</h3><small data-edit="timeline.p8">Баухаус</small><p data-edit="timeline.d8">Форма очищается от декора: важны линия, пропорция и материал.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y9">1960</span><div class="tl-card"><h3 data-edit="timeline.t9">Студийная керамика</h3><small data-edit="timeline.p9">США, Европа</small><p data-edit="timeline.d9">Художник работает в своей мастерской и подписывает каждое изделие.</p></div></li>
+        <li class="reveal"><span class="year" data-edit="timeline.y10">2020</span><div class="tl-card"><h3 data-edit="timeline.t10">Цифровая ваза</h3><small data-edit="timeline.p10">3D и AR</small><p data-edit="timeline.d10">Модель создаётся в компьютере, печатается и просматривается в дополненной реальности.</p></div></li>
+      </ol>
+    </section>
+
+    <!-- ===================== 6. КОЛЛЕКЦИЯ ===================== -->
+    <section class="section" id="collection">
+      <h2 class="section-title reveal" data-edit="collection.title">Коллекция форм</h2>
+      <div class="char-grid">
+        <article class="char reveal">
+          <div class="char-avatar c-amphora">🏺</div>
+          <h3 data-edit="collection.c1.title">Амфора</h3>
+          <span class="tag tag-both" data-edit="collection.c1.tag">Древний классик</span>
+          <p data-edit="collection.c1.text">Высокий сосуд с двумя ручками и узким горлом. Служила для вина, масла и воды, а сегодня — главный символ античной керамики.</p>
+        </article>
+        <article class="char reveal">
+          <div class="char-avatar c-jug">🫙</div>
+          <h3 data-edit="collection.c2.title">Кувшин</h3>
+          <span class="tag tag-friend" data-edit="collection.c2.tag">Практичный друг</span>
+          <p data-edit="collection.c2.text">Простая форма с широким туловом и удобным сливом. Его гончары делали каждый день — и до сих пор делают.</p>
+        </article>
+        <article class="char reveal">
+          <div class="char-avatar c-vase">🌷</div>
+          <h3 data-edit="collection.c3.title">Ваза для цветов</h3>
+          <span class="tag tag-friend" data-edit="collection.c3.tag">Современный фаворит</span>
+          <p data-edit="collection.c3.text">Устойчивое основание и свободное горлышко: форма создана так, чтобы букет стоял ровно и долго радовал глаз.</p>
+        </article>
+        <article class="char reveal">
+          <div class="char-avatar c-art">🎭</div>
+          <h3 data-edit="collection.c4.title">Авторская ваза</h3>
+          <span class="tag tag-enemy" data-edit="collection.c4.tag">Художественный объект</span>
+          <p data-edit="collection.c4.text">Асимметрия, неожиданная фактура и подпись мастера. Такой сосуд ценят не за вместимость, а за идею.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== 7. ОБ УЧЕБНОМ ПРОЕКТЕ ===================== -->
+    <section class="section section-alt" id="project" aria-labelledby="project-title">
+      <div class="wrap">
+        <h2 class="section-title reveal" id="project-title" data-edit="project.title">Об учебном проекте</h2>
+        <p class="section-intro reveal" data-edit="project.intro">Этот сайт-презентация подготовлен как учебный проект: керамическая тема стала основой для изучения вёрстки, 3D-графики и работы с контентом.</p>
+        <div class="project-card reveal">
+          <div class="college-head">
+            <img class="college-emblem" src="assets/vagpklogo.webp" alt="Эмблема учебного заведения" data-image="project.emblem" />
+            <div>
+              <p class="college-label" data-edit="project.label">Учебное заведение</p>
+              <h3 class="college-name" data-edit="project.college">ВАГПК</h3>
+              <p class="college-city"><span aria-hidden="true">📍</span> <span data-edit="project.city">Воркута</span></p>
+            </div>
+          </div>
+          <dl class="author-list">
+            <div><dt data-edit="project.dt1">Автор проекта</dt><dd data-edit="project.dd1">Илия Хацкевич</dd></div>
+            <div><dt data-edit="project.dt2">Специальность</dt><dd data-edit="project.dd2">09.02.07 «Информационные системы и программирование»</dd></div>
+            <div><dt data-edit="project.dt3">Квалификация</dt><dd data-edit="project.dd3">Разработчик веб и мультимедийных приложений</dd></div>
+          </dl>
+        </div>
+
+        <h3 class="subsection-title reveal" data-edit="project.photoTitle">Специальность в фотографиях</h3>
+        <div class="photo-grid">
+          <figure class="photo-card reveal">
+            <div class="photo-frame"><img src="assets/specialty-practice.jpg" alt="Практические занятия по разработке кода информационных систем" loading="lazy" data-image="project.specPhoto1" /></div>
+            <figcaption data-edit="project.specCap1">Практические занятия: разработка кода информационных систем и веб-приложений.</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <div class="photo-frame"><img src="assets/specialty-lab.jpg" alt="Лабораторная работа по операционным системам и средам" loading="lazy" data-image="project.specPhoto2" /></div>
+            <figcaption data-edit="project.specCap2">Лабораторная работа по дисциплине ОП.01 «Операционные системы и среды».</figcaption>
+          </figure>
+        </div>
+
+        <h3 class="subsection-title reveal" data-edit="project.sub1">Изучаемые дисциплины</h3>
+        <ul class="discipline-grid reveal">
+          <li class="discipline-item"><span aria-hidden="true">💻</span><span data-edit="project.disc1">Основы алгоритмизации и программирования</span></li>
+          <li class="discipline-item"><span aria-hidden="true">🗄️</span><span data-edit="project.disc2">Основы проектирования баз данных</span></li>
+          <li class="discipline-item"><span aria-hidden="true">🌐</span><span data-edit="project.disc3">Проектирование и разработка веб-приложений</span></li>
+          <li class="discipline-item"><span aria-hidden="true">🎨</span><span data-edit="project.disc4">Графический дизайн и мультимедиа</span></li>
+          <li class="discipline-item"><span aria-hidden="true">🐞</span><span data-edit="project.disc5">Тестирование информационных систем</span></li>
+          <li class="discipline-item"><span aria-hidden="true">📋</span><span data-edit="project.disc6">Управление проектами</span></li>
+          <li class="discipline-item"><span aria-hidden="true">🖥️</span><span data-edit="project.disc7">Внедрение и поддержка компьютерных систем</span></li>
+          <li class="discipline-item"><span aria-hidden="true">🧪</span><span data-edit="project.disc8">Обеспечение качества функционирования систем</span></li>
+          <li class="discipline-item"><span aria-hidden="true">🧱</span><span data-edit="project.disc9">Основы 3D-моделирования</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== 8. ПРИМЕНЕНИЕ 3D-МОДЕЛИ ===================== -->
+    <section class="section" id="model-purpose" aria-labelledby="model-purpose-title">
+      <h2 class="section-title reveal" id="model-purpose-title" data-edit="purpose.title">Применение 3D-модели</h2>
+      <p class="section-intro reveal" data-edit="purpose.intro">3D-модель вазы универсальна: её можно печатать, анимировать, встраивать в сайты и использовать в обучении.</p>
+
+      <div class="purpose-grid">
+        <article class="purpose-card reveal"><div class="purpose-icon">🖨️</div><h3 data-edit="purpose.c1.title">3D-печать</h3><p data-edit="purpose.c1.text">Модель экспортируется в STL и становится прототипом изделия или сувениром.</p></article>
+        <article class="purpose-card reveal"><div class="purpose-icon">🎮</div><h3 data-edit="purpose.c2.title">Игровые движки</h3><p data-edit="purpose.c2.text">Импорт в Unity, Unreal или Godot: ваза как объект сцены или декорация уровня.</p></article>
+        <article class="purpose-card reveal"><div class="purpose-icon">🥽</div><h3 data-edit="purpose.c3.title">AR и VR</h3><p data-edit="purpose.c3.text">Через WebXR ваза «появляется» в комнате — удобно для магазина и выставки.</p></article>
+        <article class="purpose-card reveal"><div class="purpose-icon">🎬</div><h3 data-edit="purpose.c4.title">Анимация и рендер</h3><p data-edit="purpose.c4.text">Основа для роликов в Blender и Cinema 4D: свет, материалы и камера.</p></article>
+        <article class="purpose-card reveal"><div class="purpose-icon">🌐</div><h3 data-edit="purpose.c5.title">Веб-приложения</h3><p data-edit="purpose.c5.text">Интерактивный просмотр на сайте без установки программ — как в этом проекте.</p></article>
+        <article class="purpose-card reveal"><div class="purpose-icon">🎓</div><h3 data-edit="purpose.c6.title">Обучение 3D</h3><p data-edit="purpose.c6.text">Изучение сеток, UV-развёртки, материалов и форматов OBJ / GLTF.</p></article>
+        <article class="purpose-card reveal"><div class="purpose-icon">🛍️</div><h3 data-edit="purpose.c7.title">Каталог товаров</h3><p data-edit="purpose.c7.text">Покупатель осматривает вазу со всех сторон перед заказом.</p></article>
+        <article class="purpose-card reveal"><div class="purpose-icon">🖼️</div><h3 data-edit="purpose.c8.title">Концепт-арт</h3><p data-edit="purpose.c8.text">Быстрые рендеры с разным освещением для презентации и портфолио.</p></article>
+      </div>
+
+      <h3 class="subsection-title reveal" data-edit="purpose.sub1">Совместимые форматы и программы</h3>
+      <div class="specs-grid reveal">
+        <div class="spec-item"><span class="spec-label" data-edit="purpose.s1.label">Формат модели</span><span class="spec-value" data-edit="purpose.s1.value">OBJ / GLB / GLTF / STL</span></div>
+        <div class="spec-item"><span class="spec-label" data-edit="purpose.s2.label">Текстуры</span><span class="spec-value" data-edit="purpose.s2.value">PNG / JPG</span></div>
+        <div class="spec-item"><span class="spec-label" data-edit="purpose.s3.label">3D-редакторы</span><span class="spec-value" data-edit="purpose.s3.value">Blender, Maya, 3ds Max</span></div>
+        <div class="spec-item"><span class="spec-label" data-edit="purpose.s4.label">Игровые движки</span><span class="spec-value" data-edit="purpose.s4.value">Unity, Unreal, Godot</span></div>
+        <div class="spec-item"><span class="spec-label" data-edit="purpose.s5.label">Веб-рендер</span><span class="spec-value" data-edit="purpose.s5.value">Three.js, Babylon.js</span></div>
+        <div class="spec-item"><span class="spec-label" data-edit="purpose.s6.label">3D-печать</span><span class="spec-value" data-edit="purpose.s6.value">Cura, PrusaSlicer</span></div>
+      </div>
+
+    </section>
+
+    <!-- ===================== 9. ИНТЕРЕСНЫЕ ФАКТЫ ===================== -->
+    <section class="section section-alt" id="facts">
+      <h2 class="section-title reveal" data-edit="facts.title">Интересные факты</h2>
+      <div class="facts">
+        <div class="fact reveal"><span class="fact-num">01</span><p data-edit="facts.f1">Слово «ваза» пришло из латинского <strong>vas</strong> — сосуд, посуда.</p></div>
+        <div class="fact reveal"><span class="fact-num">02</span><p data-edit="facts.f2">Древние амфоры использовали и как «упаковку»: в них перевозили вино, оливковое масло и рыбный соус.</p></div>
+        <div class="fact reveal"><span class="fact-num">03</span><p data-edit="facts.f3">Кобальтовая глазурь в китайском фарфоре была настолько ценной, что дала название целой эпохе — «голубой и белый».</p></div>
+        <div class="fact reveal"><span class="fact-num">04</span><p data-edit="facts.f4">Гончарный круг появился около 3500 лет до н. э. и стал первым «станком» в истории ремесла.</p></div>
+        <div class="fact reveal"><span class="fact-num">05</span><p data-edit="facts.f5">Техника раку требует всей огневой смелости: изделие вынимают из печи раскалённым и опускают в опилки.</p></div>
+        <div class="fact reveal"><span class="fact-num">06</span><p data-edit="facts.f6">Фарфор «поёт»: если легко ударить по тонкому краю, он издает высокий чистый звук.</p></div>
+        <div class="fact reveal"><span class="fact-num">07</span><p data-edit="facts.f7">Современные дизайнеры печатают вазы из керамических паст — форма, невозможная на гончарном круге.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-star">✦</div>
+    <p data-edit="footer.p1">Проект создан для учебного задания.</p>
+    <p class="footer-author" data-edit="footer.author">Сделано: Илия Хацкевич, ИСП-25</p>
+    <p class="footer-copy" data-edit="footer.copy">Тема «Вазы» · демонстрационный сайт</p>
+  </footer>
+
+  <!-- ===================== АДМИН-ПАНЕЛЬ (скрыта) ===================== -->
+  <button class="admin-fab" id="admin-fab" title="Админ-панель (Ctrl+Shift+A)" aria-label="Открыть админ-панель">⚙</button>
+  <aside class="admin-panel" id="admin-panel" hidden aria-label="Админ-панель">
+    <div class="admin-head">
+      <h2>⚙ Админ-панель</h2>
+      <button class="admin-close" id="admin-close" aria-label="Закрыть">✕</button>
+    </div>
+    <p class="admin-hint">Инструменты скрыты от посетителей. Включите их сочетанием <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd> или добавьте <code>?admin=1</code> к адресу.</p>
+
+    <div class="admin-tabs" role="tablist">
+      <button class="admin-tab active" data-tab="texts">Тексты</button>
+      <button class="admin-tab" data-tab="colors">Цвета</button>
+      <button class="admin-tab" data-tab="images">Картинки</button>
+      <button class="admin-tab" data-tab="model">3D-модель</button>
+      <button class="admin-tab" data-tab="publish">Публикация</button>
+    </div>
+
+    <div class="admin-body">
+      <div class="admin-view active" data-view="texts">
+        <p class="admin-note">Нажмите «Редактировать», затем правьте любой текст прямо на странице. Изменения сразу видны на сайте.</p>
+        <button class="admin-btn primary" id="toggle-edit">✏️ Редактировать тексты</button>
+        <div id="text-list" class="admin-list"></div>
+      </div>
+
+      <div class="admin-view" data-view="colors">
+        <p class="admin-note">Цвета меняются мгновенно. Чтобы увидеть их у всех пользователей — опубликуйте конфиг.</p>
+        <div id="color-list" class="admin-list"></div>
+      </div>
+
+      <div class="admin-view" data-view="images">
+        <p class="admin-note">Можно указать ссылку или загрузить файл с компьютера.</p>
+        <div id="image-list" class="admin-list"></div>
+      </div>
+
+      <div class="admin-view" data-view="model">
+        <p class="admin-note">Укажите путь к вашей модели в папке <code>assets/</code>, например <code>assets/vase.glb</code>. Поддерживаются GLB, GLTF, OBJ+MTL.</p>
+        <label class="admin-field"><span>Путь к файлу модели</span><input type="text" id="model-src" placeholder="assets/vase.glb" /></label>
+        <label class="admin-field"><span>или загрузить файл (для предпросмотра)</span><input type="file" id="model-file" accept=".glb,.gltf,.obj,.stl" /></label>
+        <label class="admin-field"><span>Масштаб: <b id="scale-value">1</b></span><input type="range" id="model-scale" min="0.2" max="3" step="0.1" value="1" /></label>
+        <label class="admin-check"><input type="checkbox" id="model-rotate" checked /> Автовращение модели</label>
+        <div class="admin-row">
+          <button class="admin-btn" id="model-apply">Применить</button>
+          <button class="admin-btn" id="model-clear">Сбросить на вазу-заглушку</button>
+        </div>
+      </div>
+
+      <div class="admin-view" data-view="publish">
+        <p class="admin-note">Сайт статический: изменения сохраняются в этом браузере как черновик. Чтобы увидеть их всем — скачайте файл <code>site-config.js</code> и замените им файл на сервере.</p>
+        <div class="admin-row">
+          <button class="admin-btn primary" id="export-config">⬇ Скачать site-config.js</button>
+          <button class="admin-btn" id="import-config">⬆ Загрузить конфиг</button>
+          <input type="file" id="config-file" accept=".js,.json" hidden />
+        </div>
+        <button class="admin-btn danger" id="reset-config">♻ Сбросить все изменения</button>
+        <p class="admin-status" id="admin-status">Изменений пока нет.</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" aria-label="Закрыть">✕</button>
+    <button class="lightbox-prev" aria-label="Предыдущее">‹</button>
+    <button class="lightbox-next" aria-label="Следующее">›</button>
+    <div class="lightbox-content"><img id="lightbox-img" src="" alt="" /><p id="lightbox-caption"></p></div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
